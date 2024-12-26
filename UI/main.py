@@ -9,6 +9,8 @@ class App:
         self.root= root
         self.user=""
         self.password=""
+        # self.my_var = tk.StringVar(value="Initial Value")
+        # self.queryEntry=tk.StringVar(value="Initial Value")
 
         self.imgFrame=tk.Frame(root,width=650,height=450,bg="white")
         self.imgFrame.place(x=20,y=20)
@@ -39,9 +41,6 @@ class App:
         
         tk.Button(self.credentialsFrame,width=14,pady=7,text="Sign in",fg="white", bg="#57a1f8", border=0, command=self.signin).place(x=70,y=204)
 
-
-        # Variable to update
-        # self.my_var = tk.StringVar(value="Initial Value")
     def on_enter_user(self):
         self.user.delete(0,'end')
 
@@ -58,27 +57,39 @@ class App:
         if name=="":
             self.password.insert(0,'Password')
 
+    def update_query(self,queryEntry):
+        self.my_var=queryEntry.get()
+        print(self.my_var)
+
     def create_second_page(self):
         root.geometry("900x800")
-
+        # global entry_value
         # Create a new frame
-        self.frame2 = tk.Frame(self.root)
-        self.frame2.pack()
-
+        self.managerFrame = tk.Frame(self.root, bg="white")
+        self.managerFrame.pack()
+        # self.query=tk.StringVar
+        # self.entry=tk.StringVar
         # Update variable with user input
         # self.my_var.set(self.entry1.get())
 
         # Display the updated variable
         # self.label2 = tk.Label(self.frame2, textvariable=self.my_var)
         # self.label2.pack()
+        tk.Label(self.managerFrame,text="Welcome back to your password manager Mr.M18.", font=("Times New Roman", 18, "bold"),bg="white").grid(row=0,column=3,pady=(20,0))
+        tk.Label(self.managerFrame,text="Please enter your key(websites/account reference) below.", font=("Times New Roman", 12, "bold"),bg="white").grid(row=1,column=3,pady=10)
+        tk.Label(self.managerFrame,text="Hint: enter 'keys' to list all keys.", font=("Times New Roman", 12, "bold"),bg="white").grid(row=2,column=3,pady=10)
+        entry=tk.Entry(self.managerFrame).grid(row=3,column=3,pady=10)
+        tk.Button(self.managerFrame,width=12,pady=5,text="Enter",fg="white", bg="#57a1f8", border=0,command=print()).grid(row=4,column=3,pady=10)
+        queryResponse=tk.Label(self.managerFrame,text='',fg="black",bg="white", font=("Microsoft YaHei UI Light", 20, "bold")).grid(row=5,column=3,pady=10)
+
 
         self.image = ImageTk.PhotoImage(Image.open("redisBackground.png"))
 
         # Create a label widget to hold the image
-        image_label = tk.Label(root, image=self.image)
+        image_label = tk.Label(self.managerFrame, image=self.image,bg="white")
 
         # Place the label in the frame
-        image_label.pack()
+        image_label.grid(row=6, column=3)
 
     def signin(self):
         usernameInput=self.user.get()
@@ -94,6 +105,7 @@ class App:
             messagebox.showerror("Invalid", "Invalid password.")
 
 root = tk.Tk()
+# entry_value = tk.StringVar(value="initalval")
 root.geometry("900x500")
 root.title("Username-Password Manager")
 root.configure(bg="#fff")
