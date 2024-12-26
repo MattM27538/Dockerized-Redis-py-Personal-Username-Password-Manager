@@ -1,101 +1,128 @@
+#ToDOs
+# give redis it's own func
+#fix coding style
+#change login credentials entry look
+#make app fit screen? Or lock screen size
+# clear user pass after login
+# don't clear login/pass upon re-clicking
+# e parameter needed?
+#top level to display keys
+# redis read from txt
+
+
 import tkinter as tk
+from tkinter import messagebox
+import redis
 
+def on_enter_user(e):
+    user.delete(0,'end')
 
-class homePage(tk.Frame):
-    def __init__(self,parent):
-        super().__init__(parent)
-        tk.Label(self, text="Redis interface page under construction. Come back soon.").pack(padx=10,pady=10)
+def on_leave_user(e):
+    name=user.get()
+    if name=="":
+        user.insert(0,'Username')
 
+def on_enter_password(e):
+    password.delete(0,'end')
 
+def on_leave_password(e):
+    name=password.get()
+    if name=="":
+        password.insert(0,'Password')
 
-class loginPage(tk.Frame):
-    def __init__(self,parent):
-        super().__init__(parent)
+def on_enter_query(e):
+    query.delete(0,'end')
 
-        usernameInput=tk.StringVar()
-        passwordInput=tk.StringVar()
+def on_leave_query(e):
+    name=query.get()
+    if name=="":
+        query.insert(0,'Account Name')
 
+def initializeRedis():
+    # Create a Redis client
+    redisDB = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
-        tk.Label(self, text="Hello, Mr.M18. Please enter your credentials.\n", font=("Times New Roman", 12)).pack()
-        usernameLabel=tk.Label(self, text ="Username", font=("Times New Roman", 12,"bold")).pack()
-        usernameEntry=tk.Entry(self, textvariable ="usernameInput", font=("Times New Roman", 12,"bold")).pack()
+    redisDB.set('facebook.com', 'username: foo\npassword: bar')
+    redisDB.set('maplestory', 'username: foo2\npassword: bar2')
+    return redisDB
 
-        passwordLabel=tk.Label(self, text="Password", font=("Times New Roman", 12,"bold")).pack()
-        passwordEntry=tk.Entry(self, textvariable="passwordInput", font=("Times New Roman", 12,"bold"), show="*").pack()
+def signin():
+    usernameInput=user.get()
+    passwordInput=password.get()
+    queryInput=query.get()
 
-
-
-
-class mainWindow():
-    def __init__(self,master):
-        mainframe=tk.Frame(master)
-        mainframe.pack(padx=10,pady=10,fill='both',expand=1)
+    if usernameInput=="admin" and passwordInput=="pass":
+        # print(queryInput)
+        # print(redisDB.keys())
+        if queryInput=="keys":
+            #ADD top level here to list keys
+            print("entered 'keys'")
+        elif redisDB.get(queryInput):
+            # print("redis succeeded")
+            queryResponse.config(text=redisDB.get(queryInput))
+        else:
+            queryResponse.config(text="Incorrect Account \nName")
+        # print("logged in successfully")
         
-        self.index=0
-        self.buttonDisplay="Login/Logout"
-        # self.loginText="Login"
-        # self.logoutText="Logout"
-
-
-        self.frameList=[homePage(mainframe), loginPage(mainframe)]
-        self.frameList[1].forget()
-
-        # self.wordList["login","logout"]
-
-        bottomframe=tk.Frame(master)
-        bottomframe.pack(padx=10,pady=10)
-
-        self.changeWindow()
-
-        switch= tk.Button(bottomframe,text=self.buttonDisplay, command=self.changeWindow)
-        switch.pack(padx=10,pady=10)
-        
-
-    def changeWindow(self):
-        self.frameList[self.index].forget()
-        self.index=(self.index+1)%len(self.frameList)
-        self.frameList[self.index].tkraise()
-        self.frameList[self.index].pack(padx=10,pady=10)
-        #FIX BUTTON TO SWITCH BETWEEN LOGIN AND LOGOUT
-        # if self.buttonDisplay=="Login":
-        #     self.buttonDisplay="Logout"
-        # else:
-        #     self.buttonDisplay="Login"
-
+        # redisScreen.mainloop()
+    elif usernameInput!='admin':
+        messagebox.showerror("Invalid", "Invalid username.")
+    else:
+        messagebox.showerror("Invalid", "Invalid password.")
 
 root=tk.Tk()
-root.geometry("600x400")
+root.geometry("1100x500")
 root.title("Username-Password Manager")
-window=mainWindow(root)
+root.configure(bg="#fff")
+root.resizable(False, False)
 
-# welcomeText=tk.Label(root, text="Hello, Mr.M18.\n", font=("Times New Roman", 12))
-# # emojiText=tk.Label(root, text='\U0001F923', font=("", 100))
+imgFrame=tk.Frame(root,width=650,height=450,bg="white")
+imgFrame.place(x=20,y=20)
 
-# usernameInput=tk.StringVar()
-# passwordInput=tk.StringVar()
+img = tk.PhotoImage(file='login.png')
+tk.Label(imgFrame,image=img,bg="white").place(x=50,y=50)
+
+frame=tk.Frame(root,width=400,height=550,bg="white")
+frame.place(x=580,y=70)
+
+heading=tk.Label(frame,text='   Welcome back to your password \nmanager Mr.M18!',fg="#57a1f8",bg="white", font=("Microsoft YaHei UI Light", 14, "bold"))
+heading.place(x=0,y=5)
+
+headingHint=tk.Label(frame,text='Hint:Enter your credentials along with"keys" as your \naccount name for a list of account names',fg="#57a1f8",bg="white", font=("Microsoft YaHei UI Light", 10, "bold"))
+headingHint.place(x=0,y=60)
+
+#Username input
+user=tk.Entry(frame,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
+user.place(x=80,y=130)
+user.insert(0,'Username')
+user.bind("<FocusIn>", on_enter_user)
+user.bind("<FocusOut>", on_leave_user)
+
+#Password input
+password=tk.Entry(frame,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
+password.place(x=80,y=180)
+password.insert(0,'Password')
+password.bind("<FocusIn>", on_enter_password)
+password.bind("<FocusOut>", on_leave_password)
+
+query=tk.Entry(frame,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
+query.place(x=80,y=230)
+query.insert(0,'Account Name')
+query.bind("<FocusIn>", on_enter_query)
+query.bind("<FocusOut>", on_leave_query)
+
+# Create a Redis client
+global redisDB
+redisDB = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+redisDB.set('facebook.com', 'username: foo\npassword: bar')
+redisDB.set('maplestory', 'username: foo2\npassword: bar2')
 
 
-# usernameLabel=tk.Label(root, text ="Username", font=("Times New Roman", 12,"bold"))
-# usernameEntry=tk.Entry(root, textvariable ="usernameInput", font=("Times New Roman", 12,"bold"))
+#Login button
+tk.Button(frame,width=14,pady=7,text="Sign in",fg="white", bg="#57a1f8", border=0, command=signin).place(x=120,y=270)
 
-# passwordLabel=tk.Label(root, text="Password", font=("Times New Roman", 12,"bold"))
-# passwordEntry=tk.Entry(root, textvariable="passwordInput", font=("Times New Roman", 12,"bold"))
-
-# # submitButton=tk.Button(root,text="Submit", command=lambda: controller.show_frame(homePage))
-
-# welcomeText.grid(row=0,column=1)
-
-# usernameLabel.grid(row=1, column=0)
-# usernameEntry.grid(row=1, column=1)
-# passwordLabel.grid(row=2, column=0)
-# passwordEntry.grid(row=2, column=1)
-# # submitButton.grid(row=3,column=1)
-
-# root.columnconfigure(0, weight=1)
-# root.columnconfigure(1, weight=1)
-# root.columnconfigure(2, weight=1)
-# root.columnconfigure(3, weight=1)
-
-
+queryResponse=tk.Label(frame,text='',fg="red",bg="white", font=("Microsoft YaHei UI Light", 20, "bold"))
+queryResponse.place(x=80,y=310)
 
 root.mainloop()
