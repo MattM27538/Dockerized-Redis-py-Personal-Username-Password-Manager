@@ -14,6 +14,7 @@ import redis
 # clear user pass after login and key input
 # don't clear login/pass upon re-clicking
 # password show="*"
+#resizability
 
 
 class App:
@@ -22,7 +23,8 @@ class App:
         self.user=""
         self.password=""
         self.redisDB=redis.Redis()
-        self.fill_redis()
+        self.populate_redis()
+        self.keysString=tk.StringVar(value="")
 
         #PAGE ONE(login)
         self.imgFrameLoginPage=tk.Frame(root,width=650,height=450,bg="white")
@@ -74,10 +76,10 @@ class App:
 
         self.image = ImageTk.PhotoImage(Image.open("redisBackground.png"))
 
-        # Create a label widget to hold the image
+        # Create a label widget to hold the image.
         image_label = tk.Label(self.managerPage, image=self.image,bg="white")
 
-        # Place the label in the frame
+        # Place the label in the frame.
         image_label.grid(row=6, column=3)
 
     #switch from login page to username-password manager page.
@@ -87,35 +89,51 @@ class App:
         self.root.geometry("900x800")
         self.managerPage.pack()
 
-    #Clear username on click of entry box
+    #Clear username on click of entry box.
     def on_enter_user(self):
         self.user.delete(0,'end')
 
-    #return username text when clicked off entry box
+    #return username text when clicked off entry box.
     def on_leave_user(self):
         name=self.user.get()
         if name=="":
             self.user.insert(0,'Username')
 
-    #Clear password on click of entry box
+    #Clear password on click of entry box.
     def on_enter_password(self):
         self.password.delete(0,'end')
 
-    #return password text when clicked off entry box
+    #return password text when clicked off entry box.
     def on_leave_password(self):
         name=self.password.get()
         if name=="":
             self.password.insert(0,'Password')
 
-    #Update query response if key exists. Else write "Key not found."
+    #Update query response if key exists. Else write "Key not found.".
     def update_query_response(self):
-        value = self.redisDB.get(self.testEntry.get())
-        if value:
-            self.my_var.set(value)
+        entry=self.testEntry.get()
+        if entry=="keys":
+            for key in self.redisDB.scan_iter("*"):
+                current_value = self.keysString.get()
+                new_value = current_value +  str(key)[1:] + "\n"
+                self.keysString.set(new_value)
+            self.create_keys_page()
         else:
-            self.my_var.set("Key not found.")
+            value = self.redisDB.get(entry)
+            if value:  
+                self.my_var.set(value)
+            else:
+                self.my_var.set("Key not found.")
 
-    #Check for correct sign in credentials
+    #Display keys(account names) to user in new top level window.
+    def create_keys_page(self):
+        top = tk.Toplevel(self.root, bg="white")
+        top.geometry("600x200")
+        top.title("Keys")
+        testLabel=tk.Label(top,textvariable=self.keysString,bg="white")
+        testLabel.pack()
+
+    #Check for correct sign in credentials.
     def signin(self):
         usernameInput=self.user.get()
         passwordInput=self.password.get()
@@ -127,8 +145,8 @@ class App:
         else:
             messagebox.showerror("Invalid", "Invalid password.")
     
-    # Create a Redis client
-    def fill_redis(self):
+    # Create a Redis client.
+    def populate_redis(self):
         # change later to containerized redis
 
         #change to read from file
