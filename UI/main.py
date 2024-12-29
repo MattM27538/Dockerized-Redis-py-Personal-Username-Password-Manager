@@ -7,7 +7,6 @@ import redis
 #ToDo
 #add redis
 #add logout
-#add window creation with all keys
 #fix coding style
 #change login credentials entry look
 #make app fit screen? Or lock screen size
@@ -15,6 +14,8 @@ import redis
 # don't clear login/pass upon re-clicking
 # password show="*"
 #resizability
+# read in from file 
+# containerize/dockercompose
 
 
 class App:
@@ -40,7 +41,7 @@ class App:
         heading.place(x=80,y=5)
 
         #Username input
-        self.user=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
+        self.user=tk.Entry(self.root,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
         self.user.place(x=30,y=80)
         self.user.insert(0,'Username')
         self.user.bind("<FocusIn>", self.on_enter_user())
@@ -148,11 +149,10 @@ class App:
     # Create a Redis client.
     def populate_redis(self):
         # change later to containerized redis
-
-        #change to read from file
-        self.redisDB.set('facebook.com', 'username: foo\npassword: bar')
-        self.redisDB.set('maplestory', 'username: foo2\npassword: bar2')
-        self.redisDB.set('runescape', 'username: foo3\npassword: bar3')
+        usernamesAndPasswords=open("Users-Passwords.txt","r")
+        for line in usernamesAndPasswords:
+            lineWords=line.split(",")
+            self.redisDB.set(lineWords[0],lineWords[1])
 
 def main():
     root = tk.Tk()
