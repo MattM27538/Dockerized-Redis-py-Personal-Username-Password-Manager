@@ -5,7 +5,6 @@ import redis
 
 
 #ToDo
-#add redis
 #add logout
 #fix coding style
 #change login credentials entry look
@@ -14,8 +13,8 @@ import redis
 # don't clear login/pass upon re-clicking
 # password show="*"
 #resizability
-# read in from file 
 # containerize/dockercompose
+# don't pack?
 
 
 class App:
@@ -41,7 +40,7 @@ class App:
         heading.place(x=80,y=5)
 
         #Username input
-        self.user=tk.Entry(self.root,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
+        self.user=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
         self.user.place(x=30,y=80)
         self.user.insert(0,'Username')
         self.user.bind("<FocusIn>", self.on_enter_user())
@@ -65,7 +64,7 @@ class App:
         self.managerPage.pack_forget()
         
         self.testEntry = tk.StringVar()
-        self.my_var = tk.StringVar(value="initial value")
+        self.my_var = tk.StringVar(value="")
 
         tk.Label(self.managerPage,text="Welcome back to your password manager Mr.M18.", font=("Times New Roman", 18, "bold"),bg="white").grid(row=0,column=3,pady=(20,0))
         tk.Label(self.managerPage,text="Please enter your key(websites/account reference) below.", font=("Times New Roman", 12, "bold"),bg="white").grid(row=1,column=3,pady=10)
@@ -74,20 +73,24 @@ class App:
         tk.Button(self.managerPage,width=12,pady=5,text="Enter",fg="white", bg="#57a1f8", border=0,command=self.update_query_response).grid(row=4,column=3,pady=10)
         self.queryLabel=tk.Label(self.managerPage,textvariable=self.my_var,fg="black",bg="white", font=("Microsoft YaHei UI Light", 20, "bold")).grid(row=5,column=3,pady=10)
 
-
-        self.image = ImageTk.PhotoImage(Image.open("redisBackground.png"))
-
+        self.redisImage=Image.open("redisBackground.png")
+        self.redisImage= self.redisImage.resize((550,400))
+        self.redisImage = ImageTk.PhotoImage(self.redisImage)
+        
         # Create a label widget to hold the image.
-        image_label = tk.Label(self.managerPage, image=self.image,bg="white")
+        image_label = tk.Label(self.managerPage, image=self.redisImage,bg="white")
 
         # Place the label in the frame.
         image_label.grid(row=6, column=3)
+
+        tk.Button(self.managerPage,bg="white",text="Logout",border=0,command=self.logout).grid(row=7,column=3)
 
     #switch from login page to username-password manager page.
     def create_second_page(self):
         self.credentialsFrameLoginPage.place_forget()
         self.imgFrameLoginPage.place_forget()
         self.root.geometry("900x800")
+        #don't pack?
         self.managerPage.pack()
 
     #Clear username on click of entry box.
@@ -145,6 +148,13 @@ class App:
             messagebox.showerror("Invalid", "Invalid username.")
         else:
             messagebox.showerror("Invalid", "Invalid password.")
+    
+    #log user out. Return to login page.
+    def logout(self):
+        self.managerPage.forget()
+        self.root.geometry("900x500")
+        self.credentialsFrameLoginPage.place(x=580,y=70)
+        self.imgFrameLoginPage.place(x=20,y=20)
     
     # Create a Redis client.
     def populate_redis(self):
