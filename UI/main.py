@@ -5,7 +5,6 @@ import redis
 
 
 #ToDo
-#add logout
 #fix coding style
 #change login credentials entry look
 #make app fit screen? Or lock screen size
@@ -15,14 +14,15 @@ import redis
 #resizability
 # containerize/dockercompose
 # don't pack?
-
+# add documentation on github change name to personal manager, 
+# tools used, what it does, how to use it, steps
 
 class App:
     def __init__(self, root):
         self.root= root
         self.user=""
         self.password=""
-        self.redisDB=redis.Redis()
+        self.redisDB=redis.Redis(host='redis', port=6379, decode_responses=True)
         self.populate_redis()
         self.keysString=tk.StringVar(value="")
 
@@ -119,7 +119,7 @@ class App:
         if entry=="keys":
             for key in self.redisDB.scan_iter("*"):
                 current_value = self.keysString.get()
-                new_value = current_value +  str(key)[1:] + "\n"
+                new_value = current_value +  str(key) + "\n"
                 self.keysString.set(new_value)
             self.create_keys_page()
         else:
