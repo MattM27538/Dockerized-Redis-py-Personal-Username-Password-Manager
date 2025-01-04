@@ -28,33 +28,33 @@ class App:
 
         #PAGE ONE(login)
         self.imgFrameLoginPage=tk.Frame(root,width=650,height=450,bg="white")
-        self.imgFrameLoginPage.place(x=20,y=20)
+        self.imgFrameLoginPage.place(relx=.40,rely=.50, anchor="center")
 
         self.loginImage = ImageTk.PhotoImage(Image.open("login.png"))
         tk.Label(self.imgFrameLoginPage,image=self.loginImage,bg="white").place(x=50,y=50)
 
         self.credentialsFrameLoginPage=tk.Frame(root,width=400,height=550,bg="white")
-        self.credentialsFrameLoginPage.place(x=580,y=70)
+        self.credentialsFrameLoginPage.place(relx=.780,rely=.580,anchor="center")
 
         heading=tk.Label(self.credentialsFrameLoginPage,text='Sign in',fg="#57a1f8",bg="white", font=("Microsoft YaHei UI Light", 23, "bold"))
-        heading.place(x=80,y=5)
+        heading.place(relx=.35,rely=.15,anchor="center")
 
         #Username input
         self.user=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
-        self.user.place(x=30,y=80)
+        self.user.place(relx=.375,rely=.25,anchor="center")
         self.user.insert(0,'Username')
         self.user.bind("<FocusIn>", self.on_enter_user())
         self.user.bind("<FocusOut>", self.on_leave_user())
 
         #Password input
         self.password=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11),)
-        self.password.place(x=30,y=150)
+        self.password.place(relx=.375,rely=.395,anchor="center")
         self.password.insert(0,'Password')
         self.password.bind("<FocusIn>", self.on_enter_password())
         self.password.bind("<FocusOut>", self.on_leave_password())
         
         
-        tk.Button(self.credentialsFrameLoginPage,width=14,pady=7,text="Sign in",fg="white", bg="#57a1f8", border=0, command=self.signin).place(x=70,y=204)
+        tk.Button(self.credentialsFrameLoginPage,width=14,pady=7,text="Sign in",fg="white", bg="#57a1f8", border=0, command=self.signin).place(relx=.385,rely=.495,anchor="center")
 
         #PAGE TWO(access usernames and passwords)
 
@@ -169,7 +169,6 @@ def main():
     root.geometry("900x500")
     root.title("Username-Password Manager")
     root.configure(bg="#fff")
-    root.resizable(False, False)
     app = App(root)
     root.mainloop()
 if __name__ == "__main__":
