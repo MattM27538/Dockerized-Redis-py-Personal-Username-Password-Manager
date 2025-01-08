@@ -7,19 +7,15 @@ import redis
 #ToDo
 #fix coding style
 #change login credentials entry look
-#make app fit screen? Or lock screen size
 # clear user pass after login and key input
 # don't clear login/pass upon re-clicking
 # password show="*"
-#resizability
-# containerize/dockercompose
-# don't pack?
 # add documentation on github change name to personal manager, 
 # tools used, what it does, how to use it, steps
 
 class App:
     def __init__(self, root):
-        self.root= root
+        self.root=root
         self.user=""
         self.password=""
         self.redisDB=redis.Redis(host='redis', port=6379, decode_responses=True)
@@ -57,21 +53,19 @@ class App:
         tk.Button(self.credentialsFrameLoginPage,width=14,pady=7,text="Sign in",fg="white", bg="#57a1f8", border=0, command=self.signin).place(relx=.385,rely=.495,anchor="center")
 
         #PAGE TWO(access usernames and passwords)
-
-        self.managerPage = tk.Frame(self.root, bg="white")
-        #don't use pack?
-        self.managerPage.pack()
-        self.managerPage.pack_forget()
+        self.managerPage = tk.Frame(self.root, height=850, width=700, bg="white")
+        self.managerPage.place(relx=.5,rely=.1,anchor="center")
+        self.managerPage.place_forget()
         
         self.testEntry = tk.StringVar()
         self.my_var = tk.StringVar(value="")
 
-        tk.Label(self.managerPage,text="Welcome back to your password manager Mr.M18.", font=("Times New Roman", 18, "bold"),bg="white").grid(row=0,column=3,pady=(20,0))
-        tk.Label(self.managerPage,text="Please enter your key(websites/account reference) below.", font=("Times New Roman", 12, "bold"),bg="white").grid(row=1,column=3,pady=10)
-        tk.Label(self.managerPage,text="Hint: enter 'keys' to list all keys.", font=("Times New Roman", 12, "bold"),bg="white").grid(row=2,column=3,pady=10)
-        tk.Entry(self.managerPage, textvariable=self.testEntry).grid(row=3,column=3,pady=10)
-        tk.Button(self.managerPage,width=12,pady=5,text="Enter",fg="white", bg="#57a1f8", border=0,command=self.update_query_response).grid(row=4,column=3,pady=10)
-        self.queryLabel=tk.Label(self.managerPage,textvariable=self.my_var,fg="black",bg="white", font=("Microsoft YaHei UI Light", 20, "bold")).grid(row=5,column=3,pady=10)
+        tk.Label(self.managerPage,text="Welcome back to your password manager Mr.M18.", font=("Times New Roman", 18, "bold"),bg="white").place(relx=.5,rely=.1,anchor="center")
+        tk.Label(self.managerPage,text="Please enter your key(websites/account reference) below.", font=("Times New Roman", 12, "bold"),bg="white").place(relx=.5,rely=.15,anchor="center")
+        tk.Label(self.managerPage,text="Hint: enter 'keys' to list all keys.", font=("Times New Roman", 12, "bold"),bg="white").place(relx=.5,rely=.2,anchor="center")
+        tk.Entry(self.managerPage, textvariable=self.testEntry).place(relx=.5,rely=.25,anchor="center")
+        tk.Button(self.managerPage,width=12,pady=5,text="Enter",fg="white", bg="#57a1f8", border=0,command=self.update_query_response).place(relx=.5,rely=.3,anchor="center")
+        self.queryLabel=tk.Label(self.managerPage,textvariable=self.my_var,fg="black",bg="white", font=("Microsoft YaHei UI Light", 20, "bold")).place(relx=.5,rely=.378,anchor="center")
 
         self.redisImage=Image.open("redisBackground.png")
         self.redisImage= self.redisImage.resize((550,400))
@@ -81,17 +75,16 @@ class App:
         image_label = tk.Label(self.managerPage, image=self.redisImage,bg="white")
 
         # Place the label in the frame.
-        image_label.grid(row=6, column=3)
+        image_label.place(relx=.5,rely=.65, anchor="center")
 
-        tk.Button(self.managerPage,bg="white",text="Logout",border=0,command=self.logout).grid(row=7,column=3)
+        tk.Button(self.managerPage,bg="white",text="Logout",border=0,command=self.logout).place(relx=.5,rely=.9, anchor="center")
 
     #switch from login page to username-password manager page.
     def create_second_page(self):
         self.credentialsFrameLoginPage.place_forget()
         self.imgFrameLoginPage.place_forget()
         self.root.geometry("900x800")
-        #don't pack?
-        self.managerPage.pack()
+        self.managerPage.place(relx=.5,rely=.5,anchor="center")
 
     #Clear username on click of entry box.
     def on_enter_user(self):
