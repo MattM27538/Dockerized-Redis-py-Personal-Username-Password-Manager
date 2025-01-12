@@ -7,12 +7,10 @@ import redis
 #ToDo
 #fix coding style
 #change login credentials entry look
-# clear user pass after login and key input
-# don't clear login/pass upon re-clicking
-# password show="*"
 # add documentation on github change name to personal manager, 
 # tools used, what it does, how to use it, steps
-#fix invalid username/pass
+#   fix invalid username/pass
+#   close keys windows when logout
 
 class App:
     def __init__(self, root):
@@ -112,12 +110,14 @@ class App:
         password=self.password.get()
         if password=="Password":
             self.password.delete(0,'end')
+            self.password.configure(show="*")
 
     #return password text when clicked off entry box.
     def on_leave_password(self,_):
         password=self.password.get()
         if password=="":
             self.password.insert(0,'Password')
+            self.password.configure(show="")
 
     #Update query response if key exists. Else write "Key not found.".
     def update_query_response(self):
@@ -163,6 +163,7 @@ class App:
         self.credentialsFrameLoginPage.place(relx=.780,rely=.580,anchor="center")
         self.imgFrameLoginPage.place(relx=.40,rely=.50, anchor="center")
         self.keyInput.set("")
+        
     
     # Create a Redis client.
     def populate_redis(self):
