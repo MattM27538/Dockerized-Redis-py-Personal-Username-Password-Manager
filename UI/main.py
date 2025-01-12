@@ -12,6 +12,7 @@ import redis
 # password show="*"
 # add documentation on github change name to personal manager, 
 # tools used, what it does, how to use it, steps
+#fix invalid username/pass
 
 class App:
     def __init__(self, root):
@@ -85,6 +86,12 @@ class App:
         self.imgFrameLoginPage.place_forget()
         self.root.geometry("900x800")
         self.managerPage.place(relx=.5,rely=.5,anchor="center")
+        self.user.delete(0,'end')
+        self.password.delete(0,'end')
+        self.on_enter_user()
+        self.on_leave_user()
+        self.on_enter_password()
+        self.on_leave_password()
 
     #Clear username on click of entry box.
     def on_enter_user(self):
@@ -145,10 +152,11 @@ class App:
     
     #log user out. Return to login page.
     def logout(self):
-        self.managerPage.forget()
+        self.managerPage.place_forget()
         self.root.geometry("900x500")
-        self.credentialsFrameLoginPage.place(x=580,y=70)
-        self.imgFrameLoginPage.place(x=20,y=20)
+        self.credentialsFrameLoginPage.place(relx=.780,rely=.580,anchor="center")
+        self.imgFrameLoginPage.place(relx=.40,rely=.50, anchor="center")
+        self.testEntry.set("")
     
     # Create a Redis client.
     def populate_redis(self):
