@@ -38,14 +38,14 @@ class App:
         #Username input
         self.user=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
         self.user.place(relx=.375,rely=.25,anchor="center")
-        self.user.insert(0,'Username')
+        # self.user.insert(0,'Username')
         self.user.bind("<FocusIn>", self.on_enter_user())
         self.user.bind("<FocusOut>", self.on_leave_user())
 
         #Password input
         self.password=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11),)
         self.password.place(relx=.375,rely=.395,anchor="center")
-        self.password.insert(0,'Password')
+        # self.password.insert(0,'Password')
         self.password.bind("<FocusIn>", self.on_enter_password())
         self.password.bind("<FocusOut>", self.on_leave_password())
         
@@ -57,13 +57,13 @@ class App:
         self.managerPage.place(relx=.5,rely=.1,anchor="center")
         self.managerPage.place_forget()
         
-        self.testEntry = tk.StringVar()
+        self.keyInput = tk.StringVar()
         self.my_var = tk.StringVar(value="")
 
         tk.Label(self.managerPage,text="Welcome back to your password manager Mr.M18.", font=("Times New Roman", 18, "bold"),bg="white").place(relx=.5,rely=.1,anchor="center")
         tk.Label(self.managerPage,text="Please enter your key(websites/account reference) below.", font=("Times New Roman", 12, "bold"),bg="white").place(relx=.5,rely=.15,anchor="center")
         tk.Label(self.managerPage,text="Hint: enter 'keys' to list all keys.", font=("Times New Roman", 12, "bold"),bg="white").place(relx=.5,rely=.2,anchor="center")
-        tk.Entry(self.managerPage, textvariable=self.testEntry).place(relx=.5,rely=.25,anchor="center")
+        tk.Entry(self.managerPage, textvariable=self.keyInput).place(relx=.5,rely=.25,anchor="center")
         tk.Button(self.managerPage,width=12,pady=5,text="Enter",fg="white", bg="#57a1f8", border=0,command=self.update_query_response).place(relx=.5,rely=.3,anchor="center")
         self.queryLabel=tk.Label(self.managerPage,textvariable=self.my_var,fg="black",bg="white", font=("Microsoft YaHei UI Light", 20, "bold")).place(relx=.5,rely=.378,anchor="center")
 
@@ -108,7 +108,7 @@ class App:
 
     #Update query response if key exists. Else write "Key not found.".
     def update_query_response(self):
-        entry=self.testEntry.get()
+        entry=self.keyInput.get()
         if entry=="keys":
             for key in self.redisDB.scan_iter("*"):
                 current_value = self.keysString.get()
@@ -121,6 +121,7 @@ class App:
                 self.my_var.set(value)
             else:
                 self.my_var.set("Key not found.")
+        self.keyInput.set("")
 
     #Display keys(account names) to user in new top level window.
     def create_keys_page(self):
