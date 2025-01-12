@@ -39,16 +39,16 @@ class App:
         #Username input
         self.user=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11))
         self.user.place(relx=.375,rely=.25,anchor="center")
-        # self.user.insert(0,'Username')
-        self.user.bind("<FocusIn>", self.on_enter_user())
-        self.user.bind("<FocusOut>", self.on_leave_user())
+        self.user.insert(0,'Username')
+        self.user.bind("<FocusIn>", self.on_enter_user)
+        self.user.bind("<FocusOut>", self.on_leave_user)
 
         #Password input
         self.password=tk.Entry(self.credentialsFrameLoginPage,width=25,fg='black',bg='white',font=("Microsoft YaHei UI Light", 11),)
         self.password.place(relx=.375,rely=.395,anchor="center")
-        # self.password.insert(0,'Password')
-        self.password.bind("<FocusIn>", self.on_enter_password())
-        self.password.bind("<FocusOut>", self.on_leave_password())
+        self.password.insert(0,'Password')
+        self.password.bind("<FocusIn>", self.on_enter_password)
+        self.password.bind("<FocusOut>", self.on_leave_password)
         
         
         tk.Button(self.credentialsFrameLoginPage,width=14,pady=7,text="Sign in",fg="white", bg="#57a1f8", border=0, command=self.signin).place(relx=.385,rely=.495,anchor="center")
@@ -86,31 +86,37 @@ class App:
         self.imgFrameLoginPage.place_forget()
         self.root.geometry("900x800")
         self.managerPage.place(relx=.5,rely=.5,anchor="center")
+        self.clear_credentials()
+
+    #Clear credentials from entry widgets when sign in is successful.
+    def clear_credentials(self):
         self.user.delete(0,'end')
+        self.user.insert(0,'Username')
         self.password.delete(0,'end')
-        self.on_enter_user()
-        self.on_leave_user()
-        self.on_enter_password()
-        self.on_leave_password()
+        self.password.insert(0,'Password')
 
     #Clear username on click of entry box.
-    def on_enter_user(self):
-        self.user.delete(0,'end')
+    def on_enter_user(self,_):
+        userName=self.user.get()
+        if userName=="Username":
+            self.user.delete(0,'end')
 
-    #return username text when clicked off entry box.
-    def on_leave_user(self):
-        name=self.user.get()
-        if name=="":
+    #Return username text when clicked off entry box.
+    def on_leave_user(self,_):
+        userName=self.user.get()
+        if userName=="":
             self.user.insert(0,'Username')
 
     #Clear password on click of entry box.
-    def on_enter_password(self):
-        self.password.delete(0,'end')
+    def on_enter_password(self,_):
+        password=self.password.get()
+        if password=="Password":
+            self.password.delete(0,'end')
 
     #return password text when clicked off entry box.
-    def on_leave_password(self):
-        name=self.password.get()
-        if name=="":
+    def on_leave_password(self,_):
+        password=self.password.get()
+        if password=="":
             self.password.insert(0,'Password')
 
     #Update query response if key exists. Else write "Key not found.".
@@ -156,7 +162,7 @@ class App:
         self.root.geometry("900x500")
         self.credentialsFrameLoginPage.place(relx=.780,rely=.580,anchor="center")
         self.imgFrameLoginPage.place(relx=.40,rely=.50, anchor="center")
-        self.testEntry.set("")
+        self.keyInput.set("")
     
     # Create a Redis client.
     def populate_redis(self):
