@@ -15,7 +15,7 @@ class App:
         self.root=root
         self.user=""
         self.password=""
-        self.redisDB=redis.Redis(host='localhost', port=6379, decode_responses=True)
+        self.redisDB=redis.Redis(host='redis', port=6379, decode_responses=True)
         self.populate_redis()
         self.keysString=tk.StringVar(value="")
         self.keysTopLevel=None
