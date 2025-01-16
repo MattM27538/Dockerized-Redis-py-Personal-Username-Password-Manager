@@ -9,16 +9,16 @@ import redis
 #change login credentials entry look
 # add documentation on github change name to personal manager, 
 # tools used, what it does, how to use it, steps
-#   close keys windows when logout
 
 class App:
     def __init__(self, root):
         self.root=root
         self.user=""
         self.password=""
-        self.redisDB=redis.Redis(host='redis', port=6379, decode_responses=True)
+        self.redisDB=redis.Redis(host='localhost', port=6379, decode_responses=True)
         self.populate_redis()
         self.keysString=tk.StringVar(value="")
+        self.keysTopLevel=None
 
         #PAGE ONE(login)
         self.imgFrameLoginPage=tk.Frame(root,width=650,height=450,bg="white")
@@ -56,14 +56,14 @@ class App:
         self.managerPage.place_forget()
         
         self.keyInput = tk.StringVar()
-        self.my_var = tk.StringVar(value="")
+        self.userPassVal = tk.StringVar(value="")
 
         tk.Label(self.managerPage,text="Welcome back to your password manager Mr.M18.", font=("Times New Roman", 18, "bold"),bg="white").place(relx=.5,rely=.1,anchor="center")
         tk.Label(self.managerPage,text="Please enter your key(websites/account reference) below.", font=("Times New Roman", 12, "bold"),bg="white").place(relx=.5,rely=.15,anchor="center")
         tk.Label(self.managerPage,text="Hint: enter 'keys' to list all keys.", font=("Times New Roman", 12, "bold"),bg="white").place(relx=.5,rely=.2,anchor="center")
         tk.Entry(self.managerPage, textvariable=self.keyInput).place(relx=.5,rely=.25,anchor="center")
         tk.Button(self.managerPage,width=12,pady=5,text="Enter",fg="white", bg="#57a1f8", border=0,command=self.update_query_response).place(relx=.5,rely=.3,anchor="center")
-        self.queryLabel=tk.Label(self.managerPage,textvariable=self.my_var,fg="black",bg="white", font=("Microsoft YaHei UI Light", 20, "bold")).place(relx=.5,rely=.378,anchor="center")
+        self.queryLabel=tk.Label(self.managerPage,textvariable=self.userPassVal,fg="black",bg="white", font=("Microsoft YaHei UI Light", 20, "bold")).place(relx=.5,rely=.378,anchor="center")
 
         self.redisImage=Image.open("redisBackground.png")
         self.redisImage= self.redisImage.resize((550,400))
@@ -122,6 +122,7 @@ class App:
     def update_query_response(self):
         entry=self.keyInput.get()
         if entry=="keys":
+            self.keysString.set("")
             for key in self.redisDB.scan_iter("*"):
                 current_value = self.keysString.get()
                 new_value = current_value +  str(key) + "\n"
@@ -130,17 +131,17 @@ class App:
         else:
             value = self.redisDB.get(entry)
             if value:  
-                self.my_var.set(value)
+                self.userPassVal.set(value)
             else:
-                self.my_var.set("Key not found.")
+                self.userPassVal.set("Key not found.")
         self.keyInput.set("")
 
     #Display keys(account names) to user in new top level window.
     def create_keys_page(self):
-        top = tk.Toplevel(self.root, bg="white")
-        top.geometry("600x200")
-        top.title("Keys")
-        testLabel=tk.Label(top,textvariable=self.keysString,bg="white")
+        self.keysTopLevel = tk.Toplevel(self.root, bg="white")
+        self.keysTopLevel .geometry("600x200")
+        self.keysTopLevel .title("Keys")
+        testLabel=tk.Label(self.keysTopLevel ,textvariable=self.keysString,bg="white")
         testLabel.pack()
 
     #Check for correct sign in credentials.
@@ -149,6 +150,8 @@ class App:
         passwordInput=self.password.get()
 
         if usernameInput=="admin" and passwordInput=="pass":
+            self.password.configure(show="")
+            self.imgFrameLoginPage.focus_set()
             self.create_second_page()
         else:
             messagebox.showerror("Invalid", "Invalid username and/or password.")
@@ -160,6 +163,8 @@ class App:
         self.credentialsFrameLoginPage.place(relx=.780,rely=.580,anchor="center")
         self.imgFrameLoginPage.place(relx=.40,rely=.50, anchor="center")
         self.keyInput.set("")
+        if self.keysTopLevel != None:
+            self.keysTopLevel.destroy()
         
     
     # Create a Redis client.
