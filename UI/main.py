@@ -9,7 +9,6 @@ import redis
 #change login credentials entry look
 # add documentation on github change name to personal manager, 
 # tools used, what it does, how to use it, steps
-#   fix invalid username/pass
 #   close keys windows when logout
 
 class App:
@@ -151,10 +150,8 @@ class App:
 
         if usernameInput=="admin" and passwordInput=="pass":
             self.create_second_page()
-        elif self.usernameInput!='admin':
-            messagebox.showerror("Invalid", "Invalid username.")
         else:
-            messagebox.showerror("Invalid", "Invalid password.")
+            messagebox.showerror("Invalid", "Invalid username and/or password.")
     
     #log user out. Return to login page.
     def logout(self):
