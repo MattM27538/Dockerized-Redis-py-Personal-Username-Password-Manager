@@ -2,7 +2,7 @@ Docker-containerized password manager using python and redis-py.
 
 Redis-py-Personal-Password-Manager creates an image of a redis instance containing usernames and password values keyed from domain-names/ account-identifiers. The image can be uploaded to dockerhub to access from any point with access to the internet that can run docker.
 
-The file named "Users-Passwords.txt" should be written into and formatted as below to have the information read into the redis database.
+The file named "Users-Passwords.txt" should be written into and formatted as "account identifier, username: user password: password" (example below) to have the information read into the redis database.
 ![image](https://github.com/user-attachments/assets/a6bdd20f-9bbe-43ab-a50e-d6a23bca29f6)
 
 The manager requires login credentials by changing the values to check for on line 152 of main.py, to be set before the image is created:
